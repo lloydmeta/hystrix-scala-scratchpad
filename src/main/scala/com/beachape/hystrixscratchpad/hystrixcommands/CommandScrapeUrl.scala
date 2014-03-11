@@ -69,7 +69,7 @@ class CommandScrapeUrl(private val url: String) extends HystrixCommand[ScrapedDa
     Hystrix Request Context, then the result is retrieved from the cached value of the first
     run
     */
-  override def getCacheKey: String = url
+//  override def getCacheKey: String = url
 }
 
 case class ScrapedData(
