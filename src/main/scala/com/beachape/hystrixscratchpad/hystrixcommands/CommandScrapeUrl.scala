@@ -64,6 +64,12 @@ class CommandScrapeUrl(private val url: String) extends HystrixCommand[ScrapedDa
    */
   def future: Future[ScrapedData] = observableToFuture(observe)
 
+  /*
+    If multiple instances of the same HystrixCommand return the same cacheKey within the same
+    Hystrix Request Context, then the result is retrieved from the cached value of the first
+    run
+    */
+  override def getCacheKey: String = url
 }
 
 case class ScrapedData(
