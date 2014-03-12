@@ -66,7 +66,7 @@ class CommandScrapeUrl(private val url: String) extends HystrixCommand[Option[Sc
   }
 
   /**
-   * Returns a Future[ScrapedData] based on the underlying HystrixCommand's #observe method
+   * Returns a Future[Option[ScrapedData]] based on the underlying HystrixCommand's #observe method
    * @return Future[Option[ScrapedData]]
    */
   def future: Future[Option[ScrapedData]] = observableToFuture(observe)
