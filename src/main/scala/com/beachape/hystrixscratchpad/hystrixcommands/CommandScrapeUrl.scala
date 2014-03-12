@@ -23,7 +23,7 @@ object CommandScrapeUrl extends DefaultJsonProtocol with ObservableToFutureSuppo
 
   val hystrixConfig: Setter = Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("ScrapeUrlGroup"))
                                     .andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
-                                      .withExecutionIsolationThreadTimeoutInMilliseconds(10000))
+                                    .withExecutionIsolationThreadTimeoutInMilliseconds(10000))
 
   // Validator
   val schemes =  Seq("http", "https")
