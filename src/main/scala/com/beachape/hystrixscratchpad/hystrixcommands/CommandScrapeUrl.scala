@@ -13,9 +13,12 @@ import rx.lang.scala.JavaConversions._
 import scala.language.postfixOps
 import ExecutionContext.Implicits.global
 import com.netflix.hystrix.HystrixCommand.Setter
+import scala.util.Success
 
 /**
- * Companion object that holds implicit conversions and pipelines
+ * Companion object that does instantiation
+ *
+ * Also holds implicit conversions and pipelines
  */
 object CommandScrapeUrl extends DefaultJsonProtocol with ObservableToFutureSupport {
 
@@ -28,7 +31,7 @@ object CommandScrapeUrl extends DefaultJsonProtocol with ObservableToFutureSuppo
   val urlValidator = new UrlValidator(schemes.toArray)
 
   // For our Http calls
-  implicit val actorRef = ActorSystem("CommandScrapeUrl")
+  implicit val actorRef = ActorSystem("CommandScrapeUrl") // Hystrix demands a bulkhead approach
   implicit val callTimeout = Timeout(10 seconds)
   implicit val jsonToScrapedData = jsonFormat5(ScrapedData)
   val pipeline = sendReceive ~> unmarshal[ScrapedData]
@@ -42,27 +45,36 @@ object CommandScrapeUrl extends DefaultJsonProtocol with ObservableToFutureSuppo
 
 }
 
-class CommandScrapeUrl(private val url: String) extends HystrixCommand[ScrapedData](CommandScrapeUrl.hystrixConfig) {
+class CommandScrapeUrl(private val url: String) extends HystrixCommand[Option[ScrapedData]](CommandScrapeUrl.hystrixConfig) {
   import CommandScrapeUrl._
   require(urlValidator.isValid(url))
 
   /**
    * Implements the run method for HystrixCommand
-   * @return ScrapedData
+   * @return Option[ScrapedData]
    */
-  def run: ScrapedData = {
+  def run: Option[ScrapedData] = {
     Await.result(
       pipeline(
-        Get("http://metascraper.beachape.com/scrape/" + java.net.URLEncoder.encode(url, "UTF8"))
-      ),
+        Get("http://metascraper.beachape.com/scrape/" + java.net.URLEncoder.encode(url, "UTF8"))).
+        map(Some(_)) recover { case _ => None },
       callTimeout.duration)
   }
 
   /**
    * Returns a Future[ScrapedData] based on the underlying HystrixCommand's #observe method
-   * @return Future[ScrapedData]
+   * @return Future[Option[ScrapedData]]
    */
-  def future: Future[ScrapedData] = observableToFuture(observe)
+  def future: Future[Option[ScrapedData]] = observableToFuture(observe)
+
+  /**
+   * The fallback is to return a None
+   *
+   * This is invoked if the command fails in any way by Hystrix.
+   *
+   * @return None
+   */
+  override def getFallback: Option[ScrapedData] = None
 
   /*
     If multiple instances of the same HystrixCommand return the same cacheKey within the same

@@ -15,16 +15,18 @@ class CommandScrapeUrlSpec extends FunSpec with Matchers with ScalaFutures {
   }
 
   describe("#future method") {
-    it("should return a ScrapedData eventually") {
+    it("should return  Some(ScrapedData(_,..)) eventually") {
       new CommandContext {
         val urlToHit: String = "http://beachape.com"
-        whenReady(command.future) { x => x.isInstanceOf[ScrapedData] should be(true) }
+        whenReady(command.future) { x =>
+          val Some(data) = x
+          data.isInstanceOf[ScrapedData] should be(true) }
       }
     }
-    it("should return a Failure for a random URL that doesnt exist") {
+    it("should return a None for a random URL that doesn't exist") {
       new CommandContext {
         val urlToHit: String = "http://beachape.com/somethingthatdoesntexist"
-        whenReady(command.future.failed) ( x => x shouldBe an [com.netflix.hystrix.exception.HystrixRuntimeException] )
+        whenReady(command.future) ( x => x should be ('empty))
       }
     }
   }
