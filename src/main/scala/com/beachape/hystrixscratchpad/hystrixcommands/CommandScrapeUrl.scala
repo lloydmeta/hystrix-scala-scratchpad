@@ -45,6 +45,11 @@ object CommandScrapeUrl extends DefaultJsonProtocol with ObservableToFutureSuppo
 
 }
 
+/**
+ * Our Command class that extends from HystrixCommand
+ *
+ * Should be instantiated using companion object
+ */
 class CommandScrapeUrl(private val url: String) extends HystrixCommand[Option[ScrapedData]](CommandScrapeUrl.hystrixConfig) {
   import CommandScrapeUrl._
   require(urlValidator.isValid(url))
