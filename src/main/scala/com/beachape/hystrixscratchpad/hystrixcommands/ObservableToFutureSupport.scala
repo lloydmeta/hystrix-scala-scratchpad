@@ -24,7 +24,7 @@ trait ObservableToFutureSupport {
   def observableToFuture[A](obs: Observable[A]) = {
     val promise = Promise[A]
     obs.subscribe(
-      onNext =  ( x => promise.success(x) ),
+      onNext =  ( x => promise.success(x)),
       onError = ( e => promise.failure(e))
     )
     promise.future
