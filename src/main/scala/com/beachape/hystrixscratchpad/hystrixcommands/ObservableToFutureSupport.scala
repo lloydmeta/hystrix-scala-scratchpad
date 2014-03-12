@@ -2,6 +2,7 @@ package com.beachape.hystrixscratchpad.hystrixcommands
 
 import rx.lang.scala.Observable
 import scala.concurrent.Promise
+import rx.lang.scala.JavaConversions._
 
 /**
  * Trait for easy conversion between RX Observables and
@@ -9,8 +10,6 @@ import scala.concurrent.Promise
  *
  */
 trait ObservableToFutureSupport {
-
-  import rx.lang.scala.JavaConversions._
 
   /**
    * Converts an Observable[A] to Future[A]
@@ -24,7 +23,7 @@ trait ObservableToFutureSupport {
    */
   def observableToFuture[A](obs: Observable[A]) = {
     val promise = Promise[A]
-    toScalaObservable(obs).subscribe(
+    obs.subscribe(
       onNext =  ( x => promise.success(x) ),
       onError = ( e => promise.failure(e))
     )
