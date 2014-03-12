@@ -1,7 +1,6 @@
 package com.beachape.hystrixscratchpad.hystrixcommands
 
 import com.netflix.hystrix.{HystrixCommandProperties, HystrixCommandGroupKey, HystrixCommand}
-import spray.json.DefaultJsonProtocol
 import spray.client.pipelining._
 import org.apache.commons.validator.routines.UrlValidator
 import scala.concurrent.{Future, Await, ExecutionContext}
@@ -19,7 +18,7 @@ import com.netflix.hystrix.HystrixCommand.Setter
  *
  * Also holds implicit conversions and pipelines
  */
-object CommandScrapeUrl extends DefaultJsonProtocol with ObservableToFutureSupport {
+object CommandScrapeUrl extends ScrapedDataMarshallingSupport with ObservableToFutureSupport {
 
   val hystrixConfig: Setter = Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("ScrapeUrlGroup"))
                                     .andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
@@ -32,7 +31,6 @@ object CommandScrapeUrl extends DefaultJsonProtocol with ObservableToFutureSuppo
   // For our Http calls
   implicit val actorRef = ActorSystem("CommandScrapeUrl") // Hystrix demands a bulkhead approach
   implicit val callTimeout = Timeout(10 seconds)
-  implicit val jsonToScrapedData = jsonFormat5(ScrapedData)
   val pipeline = sendReceive ~> unmarshal[ScrapedData]
 
   /**
