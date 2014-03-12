@@ -13,7 +13,6 @@ import rx.lang.scala.JavaConversions._
 import scala.language.postfixOps
 import ExecutionContext.Implicits.global
 import com.netflix.hystrix.HystrixCommand.Setter
-import scala.util.Success
 
 /**
  * Companion object that does instantiation
