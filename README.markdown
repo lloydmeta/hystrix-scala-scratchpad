@@ -7,11 +7,11 @@ This is Lloyd's Hystrix scratchpad
 ```scala
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.beachape.hystrixscratchpad.hystrixcommands._
-import scala.util.{Failure, Success}
+import scala.util.Success
 
 val newCommand = CommandScrapeUrl("http://amazon.com")
 newCommand.future onComplete {
-  case Success(x) => println(x)
-  case Failure(x) => println("oops")
+  case Success(Some(x)) => println(x)
+  case _  => println("oops")
 }
 ```
