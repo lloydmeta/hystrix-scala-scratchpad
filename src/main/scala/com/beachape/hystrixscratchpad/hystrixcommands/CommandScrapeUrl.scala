@@ -2,12 +2,12 @@ package com.beachape.hystrixscratchpad.hystrixcommands
 
 import com.netflix.hystrix.{HystrixCommandProperties, HystrixCommandGroupKey, HystrixCommand}
 import spray.client.pipelining._
+import spray.httpx.SprayJsonSupport._
 import org.apache.commons.validator.routines.UrlValidator
 import scala.concurrent.{Future, Await, ExecutionContext}
 import akka.actor.ActorSystem
 import scala.concurrent.duration._
 import akka.util.Timeout
-import spray.httpx.SprayJsonSupport._
 import rx.lang.scala.JavaConversions._
 import scala.language.postfixOps
 import ExecutionContext.Implicits.global

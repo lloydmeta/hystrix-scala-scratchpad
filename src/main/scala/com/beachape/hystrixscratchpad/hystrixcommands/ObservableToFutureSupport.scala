@@ -2,7 +2,6 @@ package com.beachape.hystrixscratchpad.hystrixcommands
 
 import rx.lang.scala.Observable
 import scala.concurrent.Promise
-import rx.lang.scala.JavaConversions._
 
 /**
  * Trait for easy conversion between RX Observables and

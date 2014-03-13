@@ -7,7 +7,7 @@ import scala.concurrent.duration._
 import scala.collection.JavaConversions._
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext
 import scala.concurrent.{ExecutionContext, Future}
-import com.netflix.hystrix.{HystrixEventType, HystrixCommand, HystrixRequestLog}
+import com.netflix.hystrix.{HystrixEventType, HystrixRequestLog}
 
 class CommandCollapserScrapeUrlSpec extends FunSpec with Matchers with ScalaFutures {
 

@@ -6,16 +6,16 @@ import scala.collection.JavaConversions._
 import com.netflix.hystrix.HystrixCollapser.CollapsedRequest
 import com.netflix.hystrix.HystrixCommand.Setter
 import spray.client.pipelining._
-import scala.Some
+import spray.httpx.SprayJsonSupport._
 import org.apache.commons.validator.routines.UrlValidator
 import akka.actor.ActorSystem
 import akka.util.Timeout
 import scala.concurrent.duration._
-import spray.httpx.SprayJsonSupport._
 import scala.concurrent.{Await, Future, ExecutionContext}
 import ExecutionContext.Implicits.global
 import scala.language.postfixOps
 import rx.lang.scala.JavaConversions._
+
 
 /**
  * Holds configurations and instantiates [[CommandCollapserScrapeUrl]]
